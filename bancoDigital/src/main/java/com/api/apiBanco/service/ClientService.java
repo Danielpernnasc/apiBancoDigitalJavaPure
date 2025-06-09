@@ -1,5 +1,8 @@
 package com.api.apiBanco.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,9 +10,6 @@ import com.api.apiBanco.model.Client;
 import com.api.apiBanco.model.ContaExterna;
 import com.api.apiBanco.model.ContaInterna;
 import com.api.apiBanco.repository.ClientRepository;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 
@@ -46,6 +46,13 @@ public class ClientService {
             existingClient.setNome(client.getNome());
             existingClient.setEmail(client.getEmail());
             existingClient.setPassword(client.getPassword());
+            existingClient.setRepetpassword(client.getRepetpassword());
+            if (client.getContaInterna() != null) {
+                existingClient.setContaInterna(client.getContaInterna());
+            }
+            if (client.getContaExterna() != null) {
+                existingClient.setContaExterna(client.getContaExterna());
+            }
             return clientRepository.save(existingClient);
         }).orElseThrow(() -> new RuntimeException("Cliente não encontrado com o ID: " + id));
     }
