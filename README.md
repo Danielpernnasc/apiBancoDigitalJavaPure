@@ -97,20 +97,6 @@ Desenvolvido como parte de um teste técnico para vaga de desenvolvedor backend.
 
 Feedbacks são bem-vindos!
 
-
-
----
-
-📫 Contato
-
-Daniel Pereira
-
-LinkedIn
-
-📧 danielpernnasc@gmail.com
-
-
-
 ---
 
 🏁 Próximos Passos (em progresso)
