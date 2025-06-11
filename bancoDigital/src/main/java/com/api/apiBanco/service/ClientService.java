@@ -41,12 +41,17 @@ public class ClientService {
         return clientRepository.save(client);
     }
 
+    public Optional<Client> autenticar(String email, String password) {
+        return clientRepository.findByEmail(email)
+                .filter(client -> client.getPassword().equals(password));
+    }
+
     public Client update(Long id, Client client) {
         return clientRepository.findById(id).map(existingClient -> {
             existingClient.setNome(client.getNome());
             existingClient.setEmail(client.getEmail());
             existingClient.setPassword(client.getPassword());
-            existingClient.setRepetpassword(client.getRepetpassword());
+            existingClient.setRepeatpassword(client.getRepeatpassword());
             if (client.getContaInterna() != null) {
                 existingClient.setContaInterna(client.getContaInterna());
             }

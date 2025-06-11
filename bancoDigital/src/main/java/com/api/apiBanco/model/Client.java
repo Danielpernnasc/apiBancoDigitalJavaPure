@@ -18,7 +18,7 @@ public class Client {
     private String nome;
     private String email;
     private String password;
-    private String repetpassword;
+    private String repeatpassword;
 
     @Transient
     private ContaInterna contaInterna = new ContaInterna();
@@ -58,12 +58,12 @@ public class Client {
         this.password = password;
     }
 
-    public String getRepetpassword() {
-        return repetpassword;
+    public String getRepeatpassword() {
+        return repeatpassword;
     }
 
-    public void setRepetpassword(String repetpassword) {
-        this.repetpassword = repetpassword;
+    public void setRepeatpassword(String repeatpassword) {
+        this.repeatpassword = repeatpassword;
     }
 
     public ContaInterna getContaInterna() {

@@ -4,7 +4,7 @@
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.exemplo</groupId>
+  <groupId>com.api</groupId>
   <artifactId>apiclient</artifactId>
   <version>1.0.0</version>
   <packaging>jar</packaging>
@@ -48,15 +48,83 @@
       <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
       <version>2.5.0</version>
     </dependency>
+
+
+<!-- Add your dependencies here -->
+
+<dependency>
+
+  <groupId>io.jsonwebtoken</groupId>
+
+  <artifactId>jjwt-api</artifactId>
+
+  <version>0.11.5</version>
+
+</dependency>
+
+<dependency>
+
+  <groupId>io.jsonwebtoken</groupId>
+
+  <artifactId>jjwt-impl</artifactId>
+
+  <version>0.11.5</version>
+
+  <scope>runtime</scope>
+
+</dependency>
+
+<dependency>
+
+  <groupId>io.jsonwebtoken</groupId>
+
+  <artifactId>jjwt-jackson</artifactId>
+
+  <version>0.11.5</version>
+
+  <scope>runtime</scope>
+
+</dependency>
+
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.15.4</version>
+</dependency>
+
   </dependencies>
 
   <build>
     <plugins>
+      <!-- Plugin para criar JAR executável com dependências -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>${spring.boot.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+  
+      <!-- Plugin para definir a Main Class no manifest (opcional, pois o spring-boot-maven-plugin já faz isso) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.2.2</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com.api.apiBanco.ApiClientApplication</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
       </plugin>
     </plugins>
   </build>
+  
+
 </project>
