@@ -77,8 +77,8 @@ Este projeto backend se conecta com o frontend desenvolvido com Angular 15 e Mod
 
 👉 Repositório do Frontend: MFEMyBank
  (Angular)
-  https://protect2.fireeye.com/v1/url?k=10042270-7517e131-10000245-000babddbcda-475817249de4be33&q=1&e=ad19b226-0119-4236-b27c-3da737192831&u=https%3A%2F%2Fgithub.com%2FDanielpernnasc%2FMFEMyBank%2Ftree%2Fmaster
-
+  
+https://github.com/Danielpernnasc/MFEMyBank/tree/master
 
 ---
 
