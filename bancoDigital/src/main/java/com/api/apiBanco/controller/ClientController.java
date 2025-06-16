@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import com.api.apiBanco.model.LoginRequest;
 import com.api.apiBanco.service.ClientService;
 import com.api.apiBanco.service.JwtService;
 
+@CrossOrigin(origins = "http://http://18.217.92.231") //
 @RestController
 @RequestMapping("/clientes")
 public class ClientController {
