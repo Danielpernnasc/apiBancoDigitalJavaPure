@@ -1,0 +1,188 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Banco Digital",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/BancoDigital/clientes": {
+            "get": {
+                "summary": "Listar clientes",
+                "responses": {
+                    "200": {
+                        "description": "Lista de clientes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Cliente"
+                                    }
+                                }
+                            }
+                        },
+                        "examples": {
+                            "exemplo": {
+                                "value": [
+                                    {
+                                        "id": 0,
+                                        "nome": "string",
+                                        "email": "string",
+                                        "password": "string",
+                                        "repeatpassword": "string",
+                                        "contaInterna": {
+                                            "banco": "string",
+                                            "agencia": 0,
+                                            "conta": 0,
+                                            "saldo": 0
+                                        },
+                                        "contaExterna": {
+                                            "banco": "string",
+                                            "agencia": 0,
+                                            "conta": 0,
+                                            "saldo": 0
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Criar novo cliente",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Cliente"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Cliente criado"
+                    }
+                }
+            }
+        },
+        "/BancoDigital/clientes/{id}": {
+            "get": {
+                "summary": "Buscar cliente por ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cliente encontrado"
+                    },
+                    "404": {
+                        "description": "Cliente não encontrado"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Atualizar cliente",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Cliente"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Cliente atualizado"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Remover cliente",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Cliente removido"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Cliente": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nome": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "repeatpassword": {
+                        "type": "string"
+                    },
+                    "contaInterna": {
+                        "$ref": "#/components/schemas/Conta"
+                    },
+                    "contaExterna": {
+                        "$ref": "#/components/schemas/Conta"
+                    }
+                }
+            },
+            "Conta": {
+                "type": "object",
+                "properties": {
+                    "banco": {
+                        "type": "string"
+                    },
+                    "agencia": {
+                        "type": "integer"
+                    },
+                    "conta": {
+                        "type": "integer"
+                    },
+                    "saldo": {
+                        "type": "number"
+                    }
+                }
+            }
+        }
+    }
+}
