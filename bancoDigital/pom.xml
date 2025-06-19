@@ -1,130 +1,91 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.api</groupId>
-  <artifactId>apiclient</artifactId>
-  <version>1.0.0</version>
-  <packaging>jar</packaging>
+  <artifactId>banco-digital-java-puro</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
 
-  <name>ApiClient</name>
+  <name>Banco Digital Java Puro</name>
 
   <properties>
-    <java.version>17</java.version>
-    <spring.boot.version>3.2.5</spring.boot.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
   </properties>
 
   <dependencies>
+
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-      <version>${spring.boot.version}</version>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <version>3.1.0</version>
     </dependency>
 
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
-      <version>${spring.boot.version}</version>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>5.0.0</version>
+      <scope>provided</scope>
     </dependency>
 
+    <!-- Driver JDBC MySQL -->
     <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <version>2.2.224</version>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.33</version>
+    </dependency>
+
+    <!-- Gson (JSON para API REST) -->
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.10.1</version>
+    </dependency>
+
+    <!-- JWT (para autenticação) -->
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-api</artifactId>
+      <version>0.11.5</version>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-impl</artifactId>
+      <version>0.11.5</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-jackson</artifactId>
+      <version>0.11.5</version>
       <scope>runtime</scope>
     </dependency>
 
+    <!-- Envio de e-mails (Jakarta Mail) -->
     <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
-        <version>8.0.33</version>
-      </dependency>
-      
-
-    <dependency>
-      <groupId>org.springdoc</groupId>
-      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-      <version>2.5.0</version>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>jakarta.mail</artifactId>
+      <version>2.0.1</version>
     </dependency>
-
-
-<!-- Add your dependencies here -->
-
-<dependency>
-
-  <groupId>io.jsonwebtoken</groupId>
-
-  <artifactId>jjwt-api</artifactId>
-
-  <version>0.11.5</version>
-
-</dependency>
-
-<dependency>
-
-  <groupId>io.jsonwebtoken</groupId>
-
-  <artifactId>jjwt-impl</artifactId>
-
-  <version>0.11.5</version>
-
-  <scope>runtime</scope>
-
-</dependency>
-
-<dependency>
-
-  <groupId>io.jsonwebtoken</groupId>
-
-  <artifactId>jjwt-jackson</artifactId>
-
-  <version>0.11.5</version>
-
-  <scope>runtime</scope>
-
-</dependency>
-
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>2.15.4</version>
-</dependency>
 
   </dependencies>
 
   <build>
+    <finalName>BancoDigital</finalName>
     <plugins>
-      <!-- Plugin para criar JAR executável com dependências -->
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${spring.boot.version}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-  
-      <!-- Plugin para definir a Main Class no manifest (opcional, pois o spring-boot-maven-plugin já faz isso) -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>3.2.2</version>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.3.2</version>
         <configuration>
-          <archive>
-            <manifest>
-              <mainClass>com.api.apiBanco.ApiClientApplication</mainClass>
-            </manifest>
-          </archive>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
       </plugin>
     </plugins>
   </build>
-  
 
 </project>
