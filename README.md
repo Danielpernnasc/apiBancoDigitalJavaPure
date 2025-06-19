@@ -1,124 +1,95 @@
-# 🏦 API - Meu Banco Digital
+🏦 API - Meu Banco Digital (Java Servlet)
+Este é o backend do projeto Meu Banco Digital, agora desenvolvido com Java puro (Servlets), utilizando conexão direta com MySQL via JDBC.
 
-Este é o backend do projeto **Meu Banco Digital**, desenvolvido com **Java 17** e **Spring Boot 3.2.5**.  
-A API oferece autenticação via JWT, endpoints para operações bancárias (GET, POST, PUT, DELETE) e documentação interativa com Swagger.
+A aplicação realiza operações básicas de cadastro e listagem de clientes, utilizando um servlet mapeado via web.xml e/ou anotações @WebServlet. Ideal para estudos e prática com Java web sem frameworks.
 
-Este projeto foi desenvolvido como parte de um desafio técnico e representa minha primeira aplicação Java com Spring Boot. 🚀
+🚀 Tecnologias Utilizadas
+✅ Java 17
 
----
+✅ Jakarta Servlet API
 
-## 🚀 Tecnologias Utilizadas
+✅ Apache Tomcat 11
 
-- ✅ Java 17
-- ✅ Spring Boot 3.2.5
-- ✅ Spring Security
-- ✅ JWT (JSON Web Token)
-- ✅ Maven
-- ✅ Swagger (OpenAPI)
+✅ MySQL 8
 
----
+✅ JDBC
 
-## 📁 Estrutura do Projeto
+✅ Maven
 
+✅ Gson (para JSON)
 
-apiBancoDigital/ ├── src/ │   └── main/ │       ├── java/ │       │   └── com/digitalbank/... │       └── resources/ │           └── application.properties ├── pom.xml ├── README.md
+📁 Estrutura do Projeto
+bash
+Copiar
+Editar
+apiBancoDigital/
+├── src/
+│   └── main/
+│       ├── java/
+│       │   └── com/api/apiBanco/
+│       │       ├── controller/   # Servlets
+│       │       ├── dao/         # Acesso ao banco
+│       │       └── model/       # Classe Client
+│       └── resources/
+│           └── webapp/
+│               └── WEB-INF/
+│                   └── web.xml
+├── pom.xml
+├── README.md
+⚙️ Como Executar o Projeto Localmente
+1. Clone o repositório:
+bash
+Copiar
+Editar
+git clone https://github.com/Danielpernnasc/apiBancoDigital.git
+cd apiBancoDigital
+2. Compile o projeto:
+bash
+Copiar
+Editar
+mvn clean package
+Isso gerará um arquivo .war dentro de target/.
 
----
+3. Importe o .war no Tomcat
+Copie o arquivo BancoDigital.war (ou renomeie para ROOT.war para acesso direto) para a pasta webapps do Tomcat.
 
-## ⚙️ Como Executar o Projeto Localmente
+Inicie o Tomcat (startup.bat ou startup.sh).
 
-1. **Clone o repositório**
-   ```bash
-   git clone https://github.com/Danielpernnasc/apiBancoDigital.git
-   cd apiBancoDigital
+4. Acesse via navegador:
+Listar clientes (GET):
+http://localhost:8080/BancoDigital/clientes
 
-2. Instale as dependências
+Cadastrar cliente (POST via JSON):
+http://localhost:8080/BancoDigital/clientes
 
-mvn clean install
+📦 Exemplo de JSON para Cadastro (POST)
+json
+Copiar
+Editar
+{
+  "nome": "João",
+  "email": "joao@email.com",
+  "password": "123456",
+  "repeatpassword": "123456"
+}
+Use ferramentas como Postman, Insomnia ou curl para testar.
 
+🔐 Banco de Dados
+Banco: mydigitalbank
 
-3. Execute o projeto
+Tabela: client
 
-mvn spring-boot:run
+Conexão feita com DriverManager via JDBC.
 
-
-4. Acesse a documentação Swagger
-
-http://localhost:8080/swagger-ui/index.html
-
-
-
-
-
----
-
-🔐 Autenticação com JWT
-
-A API utiliza autenticação baseada em JWT. Após realizar o login, um token é gerado e deve ser utilizado no header das requisições:
-
-Authorization: Bearer <seu_token_aqui>
-
-
----
+Credenciais estão configuradas diretamente na classe ClientDAO.java (substituir em produção!).
 
 🧪 Testes
-
-(em breve será adicionado suporte a testes automatizados com JUnit ou Spring Test)
-Para rodar testes (caso configurado):
-
-mvn test
-
-
----
+Este projeto ainda não possui testes automatizados.
+Está em fase de aprendizado e estruturação inicial.
 
 🌐 Frontend - Angular com Microfrontend
+Este backend pode ser conectado com o frontend desenvolvido em Angular 15 + Module Federation:
 
-Este projeto backend se conecta com o frontend desenvolvido com Angular 15 e Module Federation:
-
-👉 Repositório do Frontend: MFEMyBank
- (Angular)
-  
-https://github.com/Danielpernnasc/MFEMyBank/tree/master
-
----
-
-🗂️ Endpoints Principais
-
-Você pode consultar e testar todos os endpoints através do Swagger:
-
-📌 http://localhost:8080/swagger-ui/index.html
-
-
----
-
-📌 Observações
-
-Projeto com fins educativos e demonstrativos.
-
-Desenvolvido como parte de um teste técnico para vaga de desenvolvedor backend.
-
-Feedbacks são bem-vindos!
-
----
-
-🏁 Próximos Passos (em progresso)
-
-✅ Melhorar cobertura de testes
-
-✅ Adicionar Dockerfile
-
-✅ Automatizar deploy com GitHub Actions
-
-✅ Implementar base de dados com JPA + H2/PostgreSQL
-
-
----
-
-### ✅ O que fazer agora?
-
-1. Crie um arquivo `README.md` no repositório (ou substitua o atual).
-2. Copie e cole o conteúdo acima.
-3. Commit e push para o GitHub.
-
-Se quiser, posso agora gerar um **`Dockerfile`** ou configurar um
+👉 Repositório do Frontend:
+MFEMyBank (Angular)
 
