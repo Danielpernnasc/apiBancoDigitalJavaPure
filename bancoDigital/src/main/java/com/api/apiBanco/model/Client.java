@@ -28,7 +28,7 @@ public class Client {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -79,4 +79,6 @@ public class Client {
     public void setContaExterna(ContaExterna contaExterna) {
         this.contaExterna = contaExterna;
     }
+
+    // Removed duplicate method definition
 }

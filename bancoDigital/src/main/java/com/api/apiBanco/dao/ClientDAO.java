@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.api.apiBanco.model.Client;
+import com.api.apiBanco.model.LoginRequest;
 
 public class ClientDAO {
     private final String jbcURL =  "jdbc:mysql://mydigitalbank.c7sog0s4qdes.us-east-2.rds.amazonaws.com:3306/mydigitalbank";
@@ -49,6 +50,59 @@ public class ClientDAO {
             System.out.println("Cliente cadastrado com sucesso!");
         }
     }
+
+    public Client loginClient(LoginRequest loginRequest) throws SQLException {
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+
+
+        try {
+
+            connection = DriverManager.getConnection(jbcURL, user, pass);
+
+            String sql = "SELECT * FROM client WHERE email = ? AND password = ?";
+
+            preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setString(1, loginRequest.getEmail());
+
+            preparedStatement.setString(2, loginRequest.getPassword());
+
+            resultSet = preparedStatement.executeQuery();
+
+
+
+            if (resultSet.next()) {
+
+                Client client = new Client();
+
+                client.setId(resultSet.getInt("id"));
+
+                client.setName(resultSet.getString("nome"));
+
+                client.setEmail(resultSet.getString("email"));
+
+                return client;
+
+            }
+
+        } finally {
+
+            if (resultSet != null) resultSet.close();
+
+            if (preparedStatement != null) preparedStatement.close();
+
+            if (connection != null) connection.close();
+
+        }
+
+        return null;
+
+    }
+    
 
     public Client getClientById(Client clientId) {
         Client foundClient = null;

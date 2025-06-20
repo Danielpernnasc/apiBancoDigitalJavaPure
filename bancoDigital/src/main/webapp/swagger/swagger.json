@@ -18,32 +18,32 @@
                                     "items": {
                                         "$ref": "#/components/schemas/Cliente"
                                     }
-                                }
-                            }
-                        },
-                        "examples": {
-                            "exemplo": {
-                                "value": [
-                                    {
-                                        "id": 0,
-                                        "nome": "string",
-                                        "email": "string",
-                                        "password": "string",
-                                        "repeatpassword": "string",
-                                        "contaInterna": {
-                                            "banco": "string",
-                                            "agencia": 0,
-                                            "conta": 0,
-                                            "saldo": 0
-                                        },
-                                        "contaExterna": {
-                                            "banco": "string",
-                                            "agencia": 0,
-                                            "conta": 0,
-                                            "saldo": 0
-                                        }
+                                },
+                                "examples": {
+                                    "exemplo": {
+                                        "value": [
+                                            {
+                                                "id": 0,
+                                                "nome": "string",
+                                                "email": "string",
+                                                "password": "string",
+                                                "repeatpassword": "string",
+                                                "contaInterna": {
+                                                    "banco": "string",
+                                                    "agencia": 0,
+                                                    "conta": 0,
+                                                    "saldo": 0
+                                                },
+                                                "contaExterna": {
+                                                    "banco": "string",
+                                                    "agencia": 0,
+                                                    "conta": 0,
+                                                    "saldo": 0
+                                                }
+                                            }
+                                        ]
                                     }
-                                ]
+                                }
                             }
                         }
                     }
@@ -68,6 +68,29 @@
                 }
             }
         },
+        "/BancoDigital/clientes/login": {
+            "post": {
+                "summary": "Login de cliente",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login bem-sucedido"
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas"
+                    }
+                }
+            }
+        },
         "/BancoDigital/clientes/{id}": {
             "get": {
                 "summary": "Buscar cliente por ID",
@@ -83,7 +106,14 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Cliente encontrado"
+                        "description": "Cliente encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Cliente"
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "description": "Cliente não encontrado"
@@ -182,6 +212,21 @@
                         "type": "number"
                     }
                 }
+            },
+            "LoginRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "email",
+                    "password"
+                ]
             }
         }
     }
