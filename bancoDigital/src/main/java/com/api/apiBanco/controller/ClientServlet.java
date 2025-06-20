@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.api.apiBanco.dao.ClientDAO;
 import com.api.apiBanco.model.Client;
+import com.api.apiBanco.model.LoginRequest;
 import com.api.apiBanco.service.ClientService;
 import com.google.gson.Gson;
 
@@ -15,7 +16,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+// @WebServlet("/BancoDigital/clientes/login")
 public class ClientServlet extends HttpServlet{
+ 
     private final ClientDAO clientDAO = new ClientDAO();
      private final ClientService clientService = new ClientService();
 
@@ -63,28 +66,47 @@ public class ClientServlet extends HttpServlet{
      }
      
    
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String json = request.getReader().lines().reduce("", (accumulator, actual) -> accumulator + actual);
-        Client client = new Gson().fromJson(json, Client.class);
-        try {
-            clientService.createClient(client); 
-            response.setStatus(HttpServletResponse.SC_CREATED);
-            response.getWriter().write("Client created successfully");
-        } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Error creating client: " + e.getMessage());
-            return;
-        }
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            System.out.println("Driver carregado com sucesso.");
-        } catch (ClassNotFoundException e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Error loading database driver: " + e.getMessage());
-            return;
-        }
-    }
+     @Override
+     protected void doPost(HttpServletRequest request, HttpServletResponse response)
+             throws ServletException, IOException {
+         String pathInfo = request.getPathInfo(); // ex: /login ou /
+
+         if (pathInfo != null && pathInfo.equals("/login")) {
+             // Roteia para login
+             doPostLogin(request, response);
+         } else if (pathInfo == null || pathInfo.equals("/")) {
+             // Criação normal de cliente
+             String json = request.getReader().lines().reduce("", (accumulator, actual) -> accumulator + actual);
+             Client client = new Gson().fromJson(json, Client.class);
+             try {
+                 clientService.createClient(client);
+                 response.setStatus(HttpServletResponse.SC_CREATED);
+                 response.getWriter().write("Client created successfully");
+             } catch (Exception e) {
+                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                 response.getWriter().write("Error creating client: " + e.getMessage());
+             }
+         } else {
+             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Invalid POST path");
+         }
+     }
+
+     private void doPostLogin(HttpServletRequest request, HttpServletResponse response)
+             throws ServletException, IOException {
+         String json = request.getReader().lines().reduce("", (accumulator, actual) -> accumulator + actual);
+         LoginRequest loginRequest = new Gson().fromJson(json, LoginRequest.class);
+
+         try {
+             String token = clientService.loginClientAndGenerateToken(loginRequest);
+             response.setStatus(HttpServletResponse.SC_OK);
+             response.setContentType("application/json");
+             response.getWriter().write("{\"token\": \"" + token + "\"}");
+         } catch (Exception e) {
+             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+             response.setContentType("application/json");
+             response.getWriter().write("{\"error\":\"Login failed: " + e.getMessage() + "\"}");
+         }
+     }
 
     @Override
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

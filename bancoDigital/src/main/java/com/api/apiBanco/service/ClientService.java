@@ -1,58 +1,97 @@
 package com.api.apiBanco.service;
 import java.util.List;
-
-import com.api.apiBanco.dao.ClientDAO;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.api.apiBanco.model.Client;
+import com.api.apiBanco.model.LoginRequest;
+import com.api.apiBanco.dao.ClientDAO;
+import com.auth0.jwt.JWT;
 
 public class ClientService {
+    private static final String SECRET_KEY = "DigiSafeUpdate2025";
     private ClientDAO clientDAO = new ClientDAO();
 
- public List<Client> getAllClients() throws Exception {
-    List<Client> clients = clientDAO.listarClientes();
-    if (clients == null || clients.isEmpty()) {
-        throw new Exception("Nenhum cliente encontrado");
-    }
-    return clients;
-}
-
-public Client getClientById(Client clientId) throws Exception {
-    
-    if (clientId == null) {
-        throw new Exception("ID do Cliente é obrigatório e não pode ser nulo");
-    }
-    Client client = clientDAO.getClientById(clientId);
-    if (client == null) {
-        throw new Exception("Cliente não encontrado com o ID fornecido");
-    }
-    return client;
-}
-
-
-public void createClient(Client client) throws Exception {
-
-    if(client == null){
-        throw new Exception("Cliente não pode ter campos nulos");
-
+    public List<Client> getAllClients() throws Exception {
+        List<Client> clients = clientDAO.listarClientes();
+        if (clients == null || clients.isEmpty()) {
+            throw new Exception("Nenhum cliente encontrado");
+        }
+        return clients;
     }
 
-    if(client.getName() == null || client.getName().isEmpty()){
-        throw new Exception("Nome do Cliente é obrigatório e não pode ser nulo ou vazio");
+    public Client getClientById(Client clientId) throws Exception {
+        
+        if (clientId == null) {
+            throw new Exception("ID do Cliente é obrigatório e não pode ser nulo");
+        }
+        Client client = clientDAO.getClientById(clientId);
+        if (client == null) {
+            throw new Exception("Cliente não encontrado com o ID fornecido");
+        }
+        return client;
     }
 
-    if(client.getEmail() == null || client.getEmail().isEmpty()){
-        throw new Exception("Email do cliente é obrigatório e não pode ser nulo ou vazio");
+
+    public void createClient(Client client) throws Exception {
+
+        if(client == null){
+            throw new Exception("Cliente não pode ter campos nulos");
+
+        }
+
+        if(client.getName() == null || client.getName().isEmpty()){
+            throw new Exception("Nome do Cliente é obrigatório e não pode ser nulo ou vazio");
+        }
+
+        if(client.getEmail() == null || client.getEmail().isEmpty()){
+            throw new Exception("Email do cliente é obrigatório e não pode ser nulo ou vazio");
+        }
+
+        if(client.getPassword() == null || client.getPassword().isEmpty()){
+            throw new Exception("Senha do cliente é obrigatório e não pode ser nula ou vazia");
+        }
+
+        if(client.getRepeatpassword() == null || client.getRepeatpassword().isEmpty()){
+            throw new Exception("Repetição de senha do cliente é obrigatório e não pode ser nula ou vazia");
+        }
+
+        clientDAO.cadastrarCliente(client);
     }
 
-    if(client.getPassword() == null || client.getPassword().isEmpty()){
-        throw new Exception("Senha do cliente é obrigatório e não pode ser nula ou vazia");
+    public Client loginClient(LoginRequest clientLogin) throws Exception {
+        if (clientLogin == null || clientLogin.getEmail() == null || clientLogin.getPassword() == null) {
+            throw new Exception("Email e senha do Cliente são obrigatórios e não podem ser nulos");
+        }
+        Client loggedClient = clientDAO.loginClient(clientLogin);
+        if (loggedClient == null) {
+            throw new Exception("Email ou senha inválidos");
+        }
+        return loggedClient;
     }
 
-    if(client.getRepeatpassword() == null || client.getRepeatpassword().isEmpty()){
-        throw new Exception("Repetição de senha do cliente é obrigatório e não pode ser nula ou vazia");
+    public String loginClientAndGenerateToken(LoginRequest clientLogin) throws Exception {
+ 
+
+        if (clientLogin == null || clientLogin.getEmail() == null || clientLogin.getPassword() == null) {
+            throw new Exception("Email e senha do Cliente são obrigatórios e não podem ser nulos");
+        }
+        Client loggedClient = clientDAO.loginClient(clientLogin);
+        if (loggedClient == null) {
+            throw new Exception("Email ou senha inválidos");
+        }
+
+        Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+        String token = JWT.create()
+                .withSubject(loggedClient.getEmail())
+                .withClaim("id", loggedClient.getId())
+                .withClaim("nome", loggedClient.getName())
+                .withClaim("email", loggedClient.getEmail())
+                .withClaim("password", loggedClient.getPassword())
+                .withClaim("repeatpassword", loggedClient.getRepeatpassword())
+                .sign(algorithm);
+        return token;
     }
 
-    clientDAO.cadastrarCliente(client);
-}
+
 
     public void updateClient(Client client) throws Exception {
         if (client == null || client.getId() == null) {
