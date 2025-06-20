@@ -32,11 +32,11 @@ public class Client {
         this.id = id;
     }
 
-    public String getNome() {
+    public String getName() {
         return nome;
     }
 
-    public void setNome(String nome) {
+    public void setName(String nome) {
         this.nome = nome;
     }
 

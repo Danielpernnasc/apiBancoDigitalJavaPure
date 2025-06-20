@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.api.apiBanco.dao.ClientDAO;
 import com.api.apiBanco.model.Client;
+import com.api.apiBanco.service.ClientService;
 import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
@@ -16,42 +17,134 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class ClientServlet extends HttpServlet{
     private final ClientDAO clientDAO = new ClientDAO();
+     private final ClientService clientService = new ClientService();
 
     
+     @Override
+     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+         String pathInfo = request.getPathInfo(); // pega /1, /2, etc.
+     
+         // Se não houver ID na URL, retorna todos
+         if (pathInfo == null || pathInfo.equals("/")) {
+             try {
+                 List<Client> clientList = clientDAO.listarClientes();
+                 response.setContentType("application/json");
+                 PrintWriter out = response.getWriter();
+                 out.print(new Gson().toJson(clientList));
+             } catch (SQLException e) {
+                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                 response.getWriter().write("Error retrieving client list: " + e.getMessage());
+             }
+         } else {
+             // Existe ID na URL
+             String[] pathParts = pathInfo.split("/");
+             if (pathParts.length < 2) {
+                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Client ID is required");
+                 return;
+             }
+     
+             try {
+                 int clientId = Integer.parseInt(pathParts[1]);
+                 Client clientToSearch = new Client();
+                 clientToSearch.setId((long) clientId);
+     
+                 Client client = clientService.getClientById(clientToSearch);
+     
+                 response.setContentType("application/json");
+                 PrintWriter out = response.getWriter();
+                 out.print(new Gson().toJson(client));
+             } catch (NumberFormatException e) {
+                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid Client ID format");
+             } catch (Exception e) {
+                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                 response.getWriter().write("Error finding client: " + e.getMessage());
+             }
+         }
+     }
+     
+   
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String json = request.getReader().lines().reduce("", (accumulator, actual) -> accumulator + actual);
+        Client client = new Gson().fromJson(json, Client.class);
         try {
-            List<Client> clientList = clientDAO.listarClientes();
-            System.out.println("Total de clientes: " + clientList.size()); // Debug
-            response.setContentType("application/json");
-            PrintWriter out = response.getWriter();
-            out.print(new Gson().toJson(clientList));
-        } catch (SQLException e) {
+            clientService.createClient(client); 
+            response.setStatus(HttpServletResponse.SC_CREATED);
+            response.getWriter().write("Client created successfully");
+        } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Error retrieving client list: " + e.getMessage());
+            response.getWriter().write("Error creating client: " + e.getMessage());
+            return;
+        }
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            System.out.println("Driver carregado com sucesso.");
+        } catch (ClassNotFoundException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("Error loading database driver: " + e.getMessage());
+            return;
         }
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String pathInfo = request.getPathInfo(); // exemplo: /20
+        if (pathInfo == null || pathInfo.equals("/")) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Client ID is required in the URL");
+            return;
+        }
+    
+        long clientId;
         try {
-            String json = request.getReader().lines().reduce("", (accumulator, actual) -> accumulator + actual);
-            Client client = new Gson().fromJson(json, Client.class);
-            clientDAO.cadastrarCliente(client); 
-            response.setStatus(HttpServletResponse.SC_CREATED);
-            response.getWriter().write("Client created successfully");
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                System.out.println("Driver carregado com sucesso.");
-            } catch (ClassNotFoundException e) {
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.getWriter().write("Error loading database driver: " + e.getMessage());
-                return;
-            }
-        } catch (SQLException e) {
+            clientId = Integer.parseInt(pathInfo.substring(1)); // remove o `/`
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format");
+            return;
+        }
+
+        String json = request.getReader().lines().reduce("", (acc, line) -> acc + line);
+        Client client = new Gson().fromJson(json, Client.class);
+        client.setId((long) clientId); // sobrescreve o id recebido no JSON com o da URL
+    
+        try {
+            clientService.updateClient(client);
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write("Client updated successfully");
+        } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Error creating client: " + e.getMessage());
+            response.getWriter().write("Error updating client: " + e.getMessage());
+        }
+    
+    }
+    
+    @Override
+    public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String pathInfo = request.getPathInfo(); // exemplo: /20
+        if (pathInfo == null || pathInfo.equals("/")) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Client ID is required in the URL");
+            return;
+        }
+    
+        long clientId;
+        try {
+            clientId = Integer.parseInt(pathInfo.substring(1)); // remove o `/`
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format");
+            return;
+        }
+    
+        Client clientToDelete = new Client();
+        clientToDelete.setId((long) clientId);
+    
+        try {
+            clientService.deleteClient(clientToDelete);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT); // 204 No Content
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("Error deleting client: " + e.getMessage());
         }
     }
+
+   
 
 }
