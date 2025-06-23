@@ -91,6 +91,36 @@
                 }
             }
         },
+        "/BancoDigital/clientes/validate-token": {
+            "get": {
+                "summary": "Validar token JWT",
+                "description": "Valida se o token JWT passado no header Authorization é válido.",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Token JWT no formato Bearer <token>"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token válido"
+                    },
+                    "401": {
+                        "description": "Token inválido ou ausente"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/BancoDigital/clientes/{id}": {
             "get": {
                 "summary": "Buscar cliente por ID",
@@ -169,6 +199,13 @@
         }
     },
     "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
         "schemas": {
             "Cliente": {
                 "type": "object",

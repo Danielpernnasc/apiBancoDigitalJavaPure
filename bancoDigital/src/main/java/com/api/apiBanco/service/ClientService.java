@@ -1,13 +1,13 @@
 package com.api.apiBanco.service;
+
 import java.util.List;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.api.apiBanco.model.Client;
 import com.api.apiBanco.model.LoginRequest;
 import com.api.apiBanco.dao.ClientDAO;
-import com.auth0.jwt.JWT;
+import com.api.apiBanco.util.JwUtil;
 
 public class ClientService {
-    private static final String SECRET_KEY = "DigiSafeUpdate2025";
+  
     private ClientDAO clientDAO = new ClientDAO();
 
     public List<Client> getAllClients() throws Exception {
@@ -29,7 +29,6 @@ public class ClientService {
         }
         return client;
     }
-
 
     public void createClient(Client client) throws Exception {
 
@@ -69,29 +68,20 @@ public class ClientService {
     }
 
     public String loginClientAndGenerateToken(LoginRequest clientLogin) throws Exception {
- 
-
         if (clientLogin == null || clientLogin.getEmail() == null || clientLogin.getPassword() == null) {
             throw new Exception("Email e senha do Cliente são obrigatórios e não podem ser nulos");
         }
+
         Client loggedClient = clientDAO.loginClient(clientLogin);
         if (loggedClient == null) {
             throw new Exception("Email ou senha inválidos");
         }
 
-        Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
-        String token = JWT.create()
-                .withSubject(loggedClient.getEmail())
-                .withClaim("id", loggedClient.getId())
-                .withClaim("nome", loggedClient.getName())
-                .withClaim("email", loggedClient.getEmail())
-                .withClaim("password", loggedClient.getPassword())
-                .withClaim("repeatpassword", loggedClient.getRepeatpassword())
-                .sign(algorithm);
-        return token;
+        return JwUtil.generateToken(
+                loggedClient.getEmail(),
+                loggedClient.getId(),
+                loggedClient.getName());
     }
-
-
 
     public void updateClient(Client client) throws Exception {
         if (client == null || client.getId() == null) {
