@@ -1,12 +1,12 @@
-package com.api.apiBanco.controller;
-
-import com.api.apiBanco.util.JwUtil;
+package com.api.apiBookStore.controller;
 
 import jakarta.servlet.ServletException;
 
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
+
+import com.api.apiBookStore.util.JwUtil;
 
 
 public class TokenValidationServlet extends HttpServlet {

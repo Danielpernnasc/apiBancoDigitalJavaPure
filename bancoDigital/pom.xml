@@ -81,7 +81,7 @@
   </dependencies>
 
   <build>
-    <finalName>BancoDigital</finalName>
+    <finalName>BookStoreDigital</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

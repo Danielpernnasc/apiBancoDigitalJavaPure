@@ -1,4 +1,4 @@
-package com.api.apiBanco.dao;
+package com.api.apiBookStore.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.api.apiBanco.model.Client;
-import com.api.apiBanco.model.LoginRequest;
+import com.api.apiBookStore.model.Client;
+import com.api.apiBookStore.model.LoginRequest;
 
 public class ClientDAO {
     private final String jbcURL =  "jdbc:mysql://mydigitalbank.c7sog0s4qdes.us-east-2.rds.amazonaws.com:3306/mydigitalbank";
@@ -120,7 +120,7 @@ public class ClientDAO {
                     foundClient.setEmail(rs.getString("email"));
                     foundClient.setPassword(rs.getString("password"));
                     foundClient.setRepeatpassword(rs.getString("repeatpassword"));
-                    // Adicione aqui contaInterna e contaExterna se necessário
+        
                 }
             }
         } catch (SQLException e) {

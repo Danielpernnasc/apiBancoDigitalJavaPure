@@ -1,15 +1,15 @@
-package com.api.apiBanco.controller;
+package com.api.apiBookStore.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.api.apiBanco.dao.ClientDAO;
-import com.api.apiBanco.model.Client;
-import com.api.apiBanco.model.LoginRequest;
-import com.api.apiBanco.service.ClientService;
-import com.api.apiBanco.util.JwUtil;
+import com.api.apiBookStore.dao.ClientDAO;
+import com.api.apiBookStore.model.Client;
+import com.api.apiBookStore.model.LoginRequest;
+import com.api.apiBookStore.service.ClientService;
+import com.api.apiBookStore.util.JwUtil;
 import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;

@@ -1,10 +1,11 @@
-package com.api.apiBanco.service;
+package com.api.apiBookStore.service;
 
 import java.util.List;
-import com.api.apiBanco.model.Client;
-import com.api.apiBanco.model.LoginRequest;
-import com.api.apiBanco.dao.ClientDAO;
-import com.api.apiBanco.util.JwUtil;
+
+import com.api.apiBookStore.dao.ClientDAO;
+import com.api.apiBookStore.model.Client;
+import com.api.apiBookStore.model.LoginRequest;
+import com.api.apiBookStore.util.JwUtil;
 
 public class ClientService {
   
