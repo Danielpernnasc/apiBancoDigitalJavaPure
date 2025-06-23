@@ -9,6 +9,7 @@ import com.api.apiBanco.dao.ClientDAO;
 import com.api.apiBanco.model.Client;
 import com.api.apiBanco.model.LoginRequest;
 import com.api.apiBanco.service.ClientService;
+import com.api.apiBanco.util.JwUtil;
 import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
@@ -16,17 +17,35 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-// @WebServlet("/BancoDigital/clientes/login")
+
 public class ClientServlet extends HttpServlet{
  
     private final ClientDAO clientDAO = new ClientDAO();
      private final ClientService clientService = new ClientService();
 
-    
+    private boolean isTokenValid(HttpServletRequest request, HttpServletResponse response) throws IOException {
+         String authHeader = request.getHeader("Authorization");
+         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token ausente ou inválido");
+             return false;
+         }
+
+         String token = authHeader.substring(7);
+         if (!JwUtil.validateToken(token)) {
+             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido");
+             return false;
+         }
+
+         return true;
+     }
+
+
      @Override
-     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+     protected void doGet(HttpServletRequest request, HttpServletResponse response)
+             throws ServletException, IOException {
+        //if (!isTokenValid(request, response)) return;
          String pathInfo = request.getPathInfo(); // pega /1, /2, etc.
-     
+
          // Se não houver ID na URL, retorna todos
          if (pathInfo == null || pathInfo.equals("/")) {
              try {
@@ -45,14 +64,14 @@ public class ClientServlet extends HttpServlet{
                  response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Client ID is required");
                  return;
              }
-     
+
              try {
                  int clientId = Integer.parseInt(pathParts[1]);
                  Client clientToSearch = new Client();
                  clientToSearch.setId((long) clientId);
-     
+
                  Client client = clientService.getClientById(clientToSearch);
-     
+
                  response.setContentType("application/json");
                  PrintWriter out = response.getWriter();
                  out.print(new Gson().toJson(client));
@@ -64,19 +83,23 @@ public class ClientServlet extends HttpServlet{
              }
          }
      }
-     
-   
+
      @Override
      protected void doPost(HttpServletRequest request, HttpServletResponse response)
              throws ServletException, IOException {
+
          String pathInfo = request.getPathInfo(); // ex: /login ou /
 
-         if (pathInfo != null && pathInfo.equals("/login")) {
-             // Roteia para login
-             doPostLogin(request, response);
-         } else if (pathInfo == null || pathInfo.equals("/")) {
-             // Criação normal de cliente
-             String json = request.getReader().lines().reduce("", (accumulator, actual) -> accumulator + actual);
+         if ("/login".equals(pathInfo)) {
+             doPostLogin(request, response); // 🔵 NÃO VERIFICA TOKEN AQUI
+             return;
+         }
+
+         if (!isTokenValid(request, response))
+             return;
+
+         if (pathInfo == null || pathInfo.equals("/")) {
+             String json = request.getReader().lines().reduce("", (acc, line) -> acc + line);
              Client client = new Gson().fromJson(json, Client.class);
              try {
                  clientService.createClient(client);
@@ -91,9 +114,8 @@ public class ClientServlet extends HttpServlet{
          }
      }
 
-     private void doPostLogin(HttpServletRequest request, HttpServletResponse response)
-             throws ServletException, IOException {
-         String json = request.getReader().lines().reduce("", (accumulator, actual) -> accumulator + actual);
+     private void doPostLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+         String json = request.getReader().lines().reduce("", (acc, line) -> acc + line);
          LoginRequest loginRequest = new Gson().fromJson(json, LoginRequest.class);
 
          try {
@@ -103,13 +125,13 @@ public class ClientServlet extends HttpServlet{
              response.getWriter().write("{\"token\": \"" + token + "\"}");
          } catch (Exception e) {
              response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-             response.setContentType("application/json");
-             response.getWriter().write("{\"error\":\"Login failed: " + e.getMessage() + "\"}");
+             response.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
          }
      }
 
     @Override
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //if (!isTokenValid(request, response)) return;
         String pathInfo = request.getPathInfo(); // exemplo: /20
         if (pathInfo == null || pathInfo.equals("/")) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Client ID is required in the URL");
@@ -141,6 +163,7 @@ public class ClientServlet extends HttpServlet{
     
     @Override
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //if (!isTokenValid(request, response)) return;
         String pathInfo = request.getPathInfo(); // exemplo: /20
         if (pathInfo == null || pathInfo.equals("/")) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Client ID is required in the URL");
@@ -167,6 +190,5 @@ public class ClientServlet extends HttpServlet{
         }
     }
 
-   
 
 }
