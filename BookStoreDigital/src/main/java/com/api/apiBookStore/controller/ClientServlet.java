@@ -43,10 +43,8 @@ public class ClientServlet extends HttpServlet{
      @Override
      protected void doGet(HttpServletRequest request, HttpServletResponse response)
              throws ServletException, IOException {
-        //if (!isTokenValid(request, response)) return;
-         String pathInfo = request.getPathInfo(); // pega /1, /2, etc.
+         String pathInfo = request.getPathInfo();
 
-         // Se não houver ID na URL, retorna todos
          if (pathInfo == null || pathInfo.equals("/")) {
              try {
                  List<Client> clientList = clientDAO.listarClientes();

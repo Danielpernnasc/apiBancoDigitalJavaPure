@@ -31,6 +31,7 @@ public class BookStoreDAO {
         livro.setIdioma(rs.getString("idioma"));
         livro.setPreco(rs.getDouble("preco"));
         livro.setImageUrl(rs.getString("imageUrl"));
+        livro.setQuant(rs.getInt("quant"));
         return livro;
     }
 
@@ -65,10 +66,12 @@ public class BookStoreDAO {
         }
     }
 
-    public void atualizarLivro(Livros books) throws SQLException {
+    public void atualizarLivro(Livros books, Long livroId) throws SQLException {
         try (Connection conn = DriverManager.getConnection(jbcURL, user, pass)) {
             System.out.println("Conectado ao banco para atualização!");
-            stamentBook.statementInput(conn, books);
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM livros WHERE id = ?");
+            stmt.setLong(1, livroId);
+            stamentBook.statementUpdate(conn, books);
             System.out.println("Livro atualizado com sucesso!");
         }
     }

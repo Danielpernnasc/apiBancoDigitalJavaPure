@@ -19,6 +19,7 @@ public class Livros {
     private String idioma;
     private double preco;
     private String imageUrl;
+    private Integer quant;
 
     public Long getId() {
         return id;
@@ -88,5 +89,13 @@ public class Livros {
     }
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Integer getQuant() {
+        return quant;
+    }
+
+    public void setQuant(Integer quant) {
+        this.quant = quant;
     }
 }

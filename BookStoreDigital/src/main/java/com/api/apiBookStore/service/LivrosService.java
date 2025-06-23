@@ -154,7 +154,7 @@ public class LivrosService {
         if (livro == null || livro.getId() <= 0) {
             throw new Exception("Livro não pode ter campos nulos ou ID inválido");
         }
-        livrosDAO.atualizarLivro(livro);
+        livrosDAO.atualizarLivro(livro, livro.getId());
     }
 
    

@@ -213,7 +213,8 @@
                                                 "isbn": "string",
                                                 "idioma": "string",
                                                 "preco": 0,
-                                                "imageUrl": "string"
+                                                "imageUrl": "string",
+                                                "quantidade": 0
                                             }
                                         ]
                                     }
@@ -242,35 +243,7 @@
                 }
             }
         },
-        "/BookStoreDigital/livros/{title}": {
-            "get": {
-                "summary": "Buscar livro por Título",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Livro encontrado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Livro"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Livro não encontrado"
-                    }
-                }
-            },
+        "/BookStoreDigital/livros/{id}": {
             "put": {
                 "summary": "Atualizar livro",
                 "parameters": [
@@ -279,7 +252,8 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "number",
+                            "format": "long"
                         }
                     }
                 ],
@@ -314,6 +288,36 @@
                 "responses": {
                     "204": {
                         "description": "Livro removido"
+                    }
+                }
+            }
+        },
+        "/BookStoreDigital/livros/{title}": {
+            "get": {
+                "summary": "Buscar livro por Título",
+                "parameters": [
+                    {
+                        "name": "title",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Livro encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Livro"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Livro não encontrado"
                     }
                 }
             }
@@ -463,7 +467,8 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "integer"
+                        "type": "number",
+                        "format": "long"
                     },
                     "titulo": {
                         "type": "string"
@@ -495,6 +500,9 @@
                     },
                     "imageUrl": {
                         "type": "string"
+                    },
+                    "quantidade": {
+                        "type": "integer"
                     }
                 }
             }
