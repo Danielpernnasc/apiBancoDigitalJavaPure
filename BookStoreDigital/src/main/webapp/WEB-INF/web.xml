@@ -1,0 +1,33 @@
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+    version="5.0">
+
+    <servlet>
+        <servlet-name>ClientServlet</servlet-name>
+        <servlet-class>com.api.apiBookStore.controller.ClientServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ClientServlet</servlet-name>
+        <url-pattern>/clientes/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>TokenValidationServlet</servlet-name>
+        <servlet-class>com.api.apiBookStore.controller.TokenValidationServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TokenValidationServlet</servlet-name>
+        <url-pattern>/clientes/validate-token</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>LivrosServlet</servlet-name>
+        <servlet-class>com.api.apiBookStore.controller.LivrosServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LivrosServlet</servlet-name>
+        <url-pattern>/livros/*</url-pattern>
+    </servlet-mapping>
+
+</web-app>
