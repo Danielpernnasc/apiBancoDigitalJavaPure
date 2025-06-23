@@ -1,4 +1,4 @@
-package com.api.apiBanco.util;
+package com.api.apiBookStore.util;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -11,7 +11,7 @@ public class JwUtil {
 
     public static String generateToken(String subject, Long id, String nome) {
         return JWT.create()
-                .withIssuer("BancoDigitalAPI")
+                .withIssuer("BookStoreAPI")
                 .withSubject(subject)
                 .withClaim("id", id)
                 .withClaim("nome", nome)
@@ -23,7 +23,7 @@ public class JwUtil {
     public static boolean validateToken(String token) {
         try {
             JWT.require(algorithm)
-                    .withIssuer("BancoDigitalAPI")
+                    .withIssuer("BookStoreAPI")
                     .build()
                     .verify(token); // vai lançar exceção se for inválido
             return true;

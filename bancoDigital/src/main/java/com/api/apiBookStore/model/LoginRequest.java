@@ -1,4 +1,4 @@
-package com.api.apiBanco.model;
+package com.api.apiBookStore.model;
 
 public class LoginRequest {
     private String email;

@@ -1,4 +1,4 @@
-package com.api.apiBanco.filter;
+package com.api.apiBookStore.filter;
 
 import java.io.IOException;
 import jakarta.servlet.Filter;

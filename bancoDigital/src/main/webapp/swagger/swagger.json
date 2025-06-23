@@ -1,11 +1,11 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "API Banco Digital",
+        "title": "API BookStoreDigital",
         "version": "1.0.0"
     },
     "paths": {
-        "/BancoDigital/clientes": {
+        "/BookStoreDigital/clientes": {
             "get": {
                 "summary": "Listar clientes",
                 "responses": {
@@ -27,19 +27,7 @@
                                                 "nome": "string",
                                                 "email": "string",
                                                 "password": "string",
-                                                "repeatpassword": "string",
-                                                "contaInterna": {
-                                                    "banco": "string",
-                                                    "agencia": 0,
-                                                    "conta": 0,
-                                                    "saldo": 0
-                                                },
-                                                "contaExterna": {
-                                                    "banco": "string",
-                                                    "agencia": 0,
-                                                    "conta": 0,
-                                                    "saldo": 0
-                                                }
+                                                "repeatpassword": "string"
                                             }
                                         ]
                                     }
@@ -68,7 +56,7 @@
                 }
             }
         },
-        "/BancoDigital/clientes/login": {
+        "/BookStoreDigital/clientes/login": {
             "post": {
                 "summary": "Login de cliente",
                 "requestBody": {
@@ -91,7 +79,7 @@
                 }
             }
         },
-        "/BancoDigital/clientes/validate-token": {
+        "/BookStoreDigital/clientes/validate-token": {
             "get": {
                 "summary": "Validar token JWT",
                 "description": "Valida se o token JWT passado no header Authorization é válido.",
@@ -121,7 +109,7 @@
                 ]
             }
         },
-        "/BancoDigital/clientes/{id}": {
+        "/BookStoreDigital/clientes/{id}": {
             "get": {
                 "summary": "Buscar cliente por ID",
                 "parameters": [
@@ -196,6 +184,235 @@
                     }
                 }
             }
+        },
+        "/BookStoreDigital/livros": {
+            "get": {
+                "summary": "Listar livros",
+                "responses": {
+                    "200": {
+                        "description": "Lista de livros",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Livro"
+                                    }
+                                },
+                                "examples": {
+                                    "exemplo": {
+                                        "value": [
+                                            {
+                                                "id": 0,
+                                                "titulo": "string",
+                                                "autor": "string",
+                                                "editora": "string",
+                                                "anoPublicacao": "string",
+                                                "genero": "string",
+                                                "sinopse": "string",
+                                                "isbn": "string",
+                                                "idioma": "string",
+                                                "preco": 0,
+                                                "imageUrl": "string"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Criar novo livro",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Livro"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Livro criado"
+                    }
+                }
+            }
+        },
+        "/BookStoreDigital/livros/{title}": {
+            "get": {
+                "summary": "Buscar livro por Título",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Livro encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Livro"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Livro não encontrado"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Atualizar livro",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Livro"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Livro atualizado"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Remover livro",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Livro removido"
+                    }
+                }
+            }
+        },
+        "/BookStoreDigital/livros/editora/{editora}": {
+            "get": {
+                "summary": "Buscar livros por Editora",
+                "parameters": [
+                    {
+                        "name": "editora",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Livros encontrados por editora",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Livro"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nenhum livro encontrado com essa editora"
+                    }
+                }
+            }
+        },
+        "/BookStoreDigital/livros/isbn/{isbn}": {
+            "get": {
+                "summary": "Buscar livros por ISBN",
+                "parameters": [
+                    {
+                        "name": "isbn",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Livro encontrado por ISBN",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Livro"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Livro com este ISBN não encontrado"
+                    }
+                }
+            }
+        },
+        "/BookStoreDigital/livros/genero/{genero}": {
+            "get": {
+                "summary": "Buscar livros por Gênero",
+                "parameters": [
+                    {
+                        "name": "genero",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Livros encontrados por gênero",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Livro"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nenhum livro encontrado com esse gênero"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -224,29 +441,6 @@
                     },
                     "repeatpassword": {
                         "type": "string"
-                    },
-                    "contaInterna": {
-                        "$ref": "#/components/schemas/Conta"
-                    },
-                    "contaExterna": {
-                        "$ref": "#/components/schemas/Conta"
-                    }
-                }
-            },
-            "Conta": {
-                "type": "object",
-                "properties": {
-                    "banco": {
-                        "type": "string"
-                    },
-                    "agencia": {
-                        "type": "integer"
-                    },
-                    "conta": {
-                        "type": "integer"
-                    },
-                    "saldo": {
-                        "type": "number"
                     }
                 }
             },
@@ -264,6 +458,45 @@
                     "email",
                     "password"
                 ]
+            },
+            "Livro": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "titulo": {
+                        "type": "string"
+                    },
+                    "autor": {
+                        "type": "string"
+                    },
+                    "editora": {
+                        "type": "string"
+                    },
+                    "anoPublicacao": {
+                        "type": "string"
+                    },
+                    "genero": {
+                        "type": "string"
+                    },
+                    "sinopse": {
+                        "type": "string"
+                    },
+                    "isbn": {
+                        "type": "string"
+                    },
+                    "idioma": {
+                        "type": "string"
+                    },
+                    "preco": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "imageUrl": {
+                        "type": "string"
+                    }
+                }
             }
         }
     }
