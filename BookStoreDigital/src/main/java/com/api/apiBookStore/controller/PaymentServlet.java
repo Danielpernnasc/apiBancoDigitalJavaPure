@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import com.api.apiBookStore.DTO.ItemSacola;
 import com.api.apiBookStore.model.Pagamento;
 import com.api.apiBookStore.util.PagamentoRequest;
@@ -33,31 +34,37 @@ public class PaymentServlet extends HttpServlet {
         Pagamento pagamento = new Pagamento();
 
         double valorTotal = 0;
+        StringBuilder titulos = new StringBuilder();
 
         try(Connection conn = DriverManager.getConnection(jdbcURL, user, pass)){
             for (ItemSacola item : pagamentoRequest.getSacola()) {
-                PreparedStatement stmt = conn.prepareStatement("SELECT preco, quant FROM livros WHERE id = ?");
+                PreparedStatement stmt = conn.prepareStatement("SELECT preco, quant, titulo FROM livros WHERE id = ?");
                 stmt.setLong(1, item.getlivroId());
                 ResultSet rs = stmt.executeQuery();
 
                 if (rs.next()) {
                     double preco = rs.getDouble("preco");
                     int quant = rs.getInt("quant");
+                    String titulo = rs.getString("titulo");
+                    
+                    pagamento.setTitulo(titulo);
 
-                    if (item.getQuantidade() > quant) {
+                    if (quant <= 0 || item.getQuantidade() > quant) {
                         pagamento.setStatus("erro");
-                        pagamento.setMensagem("Estoque insuficiente para o livro ID " + item.getlivroId());
+                        pagamento.setMensagem("Estoque insuficiente para o livro ID: " + item.getlivroId());
                         enviarResposta(response, pagamento);
                         return;
                     }
                         valorTotal += preco * item.getQuantidade();
 
-                        // Atualiza estoque
-                        PreparedStatement updateStmt = conn
-                        .prepareStatement("UPDATE livros SET quant = ? WHERE id = ?");
-                        updateStmt.setInt(1, quant - item.getQuantidade());
-                        updateStmt.setLong(2, item.getlivroId());
-                        updateStmt.executeUpdate();
+                        try (PreparedStatement updateStmt = conn
+                                .prepareStatement("UPDATE livros SET quant = ? WHERE id = ?")) {
+                            updateStmt.setInt(1, quant - item.getQuantidade());
+                            updateStmt.setLong(2, item.getlivroId());
+                            updateStmt.executeUpdate();
+                        }
+
+                        titulos.append(titulo).append(", ");
                     
                     
                     
@@ -81,24 +88,31 @@ public class PaymentServlet extends HttpServlet {
         System.out.println("Tipo de pagamento recebido (raw): '" + pagamento.getTipoPagamento() + "'");
 
         String tipo = pagamento.getTipoPagamento();
+      
         if (tipo == null)
             tipo = "";
-        tipo = tipo.toLowerCase().replaceAll("\\s+", ""); // remove espaços
+        tipo = tipo.toLowerCase().replaceAll("\\s+", ""); 
+        
+        
 
         switch (tipo) { // <-- aqui usa a variável 'tipo' já limpa e normalizada
             case "boleto":
+                pagamento.setTitulo(pagamento.getTitulo());
                 pagamento.setStatus("pendente");
                 pagamento.setMensagem("Boleto gerado: 00190.00009 01234.567890 12345.678901 1 23450000010000");
                 break;
             case "pix":
+                pagamento.setTitulo(pagamento.getTitulo());
                 pagamento.setStatus("aprovado");
                 pagamento.setMensagem("Pagamento aprovado via PIX.");
                 break;
             case "cartaocredito": // funciona mesmo que venha "cartão de crédito"
                 if (pagamento.getValor() <= 1000.00) {
+                    pagamento.setTitulo(pagamento.getTitulo());
                     pagamento.setStatus("aprovado");
                     pagamento.setMensagem("Pagamento com cartão aprovado!");
                 } else {
+                    pagamento.setTitulo(pagamento.getTitulo());
                     pagamento.setStatus("rejeitado");
                     pagamento.setMensagem("Pagamento recusado: limite insuficiente.");
                 }

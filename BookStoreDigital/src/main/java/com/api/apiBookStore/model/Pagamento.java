@@ -1,11 +1,19 @@
 package com.api.apiBookStore.model;
 
 public class Pagamento {
+    private String titulo;
     private String tipoPagamento;
     private double valor;
     private String status; // aprovado, pendente, rejeitado
     private String mensagem; // ex: "Aguardando pagamento do boleto", etc.
 
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
  
    
     public String getTipoPagamento() {
@@ -43,4 +51,6 @@ public class Pagamento {
     public void setMensagem(String mensagem) {
         this.mensagem = mensagem;
     }
+
+  
 }

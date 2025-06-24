@@ -4,6 +4,7 @@ public class ItemSacola {
     private long livroId;
     private int quantidade;
 
+
     public Long getlivroId() {
         return livroId;
     }
@@ -11,6 +12,8 @@ public class ItemSacola {
     public void setlivroId(long livroId) {
         this.livroId = livroId;
     }
+
+
 
     public int getQuantidade() {
         return quantidade;
