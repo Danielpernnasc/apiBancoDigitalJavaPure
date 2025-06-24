@@ -21,12 +21,18 @@ public class StamentBook {
                     stmt.setString(8, book.getIdioma());
                     stmt.setDouble(9, book.getPreco());
                     stmt.setString(10, book.getImageUrl());
-                    stmt.setInt(11, book.getQuant());
+                    if (book.getQuant() != null) {
+                        stmt.setObject(11, book.getQuant(), java.sql.Types.INTEGER);
+                    } else {
+                        stmt.setNull(11, java.sql.Types.INTEGER);
+                    }
+                    System.out.println("Quantidade recebida: " + book.getQuant());
                     stmt.executeUpdate();
                 }
         }
 
-        public void statementUpdate(Connection conn, Livros book) throws SQLException {
+     
+        public void updateLivro(Connection conn, Livros book) throws SQLException {
             String sql = "UPDATE livros SET titulo = ?, autor = ?, editora = ?, anoPublicacao = ?, genero = ?, sinopse = ?, idioma = ?, preco = ?, imageUrl = ?, quant = ? WHERE isbn = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, book.getTitulo());
@@ -39,9 +45,10 @@ public class StamentBook {
                 stmt.setDouble(8, book.getPreco());
                 stmt.setString(9, book.getImageUrl());
                 stmt.setInt(10, book.getQuant());
-                stmt.setString(11, book.getIsbn()); // Condição WHERE
+                stmt.setString(11, book.getIsbn()); // Condição para atualizar o registro correto
                 stmt.executeUpdate();
             }
         }
+        
 
 }

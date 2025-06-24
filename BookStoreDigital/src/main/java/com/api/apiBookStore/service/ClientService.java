@@ -54,6 +54,18 @@ public class ClientService {
             throw new Exception("Repetição de senha do cliente é obrigatório e não pode ser nula ou vazia");
         }
 
+        if(client.getCpf() == null || client.getCpf().isEmpty()){
+            throw new Exception("CPF do cliente é obrigatório e não pode ser nulo ou vazio");
+        }
+        
+        if(client.getEndereco() == null || client.getEndereco().isEmpty()){
+            throw new Exception("Endereço do cliente é obrigatório e não pode ser nulo ou vazio");
+        }
+
+        if(client.getDataCriacao() == null){
+            throw new Exception("Data de criação do cliente é obrigatório e não pode ser nula");
+        }
+
         clientDAO.cadastrarCliente(client);
     }
 

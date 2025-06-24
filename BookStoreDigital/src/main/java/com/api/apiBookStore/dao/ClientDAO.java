@@ -11,7 +11,7 @@ import com.api.apiBookStore.model.Client;
 import com.api.apiBookStore.model.LoginRequest;
 
 public class ClientDAO {
-    private final String jbcURL =  "jdbc:mysql://mydigitalbank.c7sog0s4qdes.us-east-2.rds.amazonaws.com:3306/mydigitalbank";
+    private final String jbcURL =  "jdbc:mysql://mydigitalbank.c7sog0s4qdes.us-east-2.rds.amazonaws.com:3306/BookStoreDB";
     private final String user = "adminDigBank";
     private final String pass = "Dce81125";
 
@@ -19,15 +19,18 @@ public class ClientDAO {
         List<Client> lista = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(jbcURL, user, pass)) {
             System.out.println("Conectado ao banco!");
-            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM client");
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM clientes");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Client client = new Client();
                 client.setId(rs.getLong("id"));
-                client.setName(rs.getString("nome"));
+                client.setName(rs.getString("name"));
                 client.setEmail(rs.getString("email"));
                 client.setPassword(rs.getString("password"));
                 client.setRepeatpassword(rs.getString("repeatpassword"));
+                client.setCpf(rs.getString("cpf"));
+                client.setEndereco(rs.getString("endereco"));
+                client.setDataCriacao(rs.getDate("dataCriacao"));
                 lista.add(client);
             }
         } catch (SQLException e) {
@@ -41,11 +44,14 @@ public class ClientDAO {
     public void cadastrarCliente(Client client) throws SQLException {
         try (Connection conn = DriverManager.getConnection(jbcURL, user, pass)) {
             System.out.println("Conectado ao banco para cadastro!");
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO client (nome, email, password, repeatpassword) VALUES (?, ?, ?, ?)");
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO clientes (name, email, password, repeatpassword, cpf, endereco, dataCriacao) VALUES (?, ?, ?, ?, ?, ?, ?)");
             stmt.setString(1, client.getName());
             stmt.setString(2, client.getEmail());
             stmt.setString(3, client.getPassword());
             stmt.setString(4, client.getRepeatpassword());
+            stmt.setString(5, client.getCpf());
+            stmt.setString(6, client.getEndereco());
+            stmt.setDate(7, new java.sql.Date(client.getDataCriacao().getTime()));
             stmt.executeUpdate();
             System.out.println("Cliente cadastrado com sucesso!");
         }
@@ -63,7 +69,7 @@ public class ClientDAO {
 
             connection = DriverManager.getConnection(jbcURL, user, pass);
 
-            String sql = "SELECT * FROM client WHERE email = ? AND password = ?";
+            String sql = "SELECT * FROM clientes WHERE email = ? AND password = ?";
 
             preparedStatement = connection.prepareStatement(sql);
 
@@ -81,9 +87,11 @@ public class ClientDAO {
 
                 client.setId(resultSet.getInt("id"));
 
-                client.setName(resultSet.getString("nome"));
+                client.setName(resultSet.getString("name"));
 
                 client.setEmail(resultSet.getString("email"));
+
+                
 
                 return client;
 
@@ -106,7 +114,7 @@ public class ClientDAO {
 
     public Client getClientById(Client clientId) {
         Client foundClient = null;
-        String sql = "SELECT * FROM client WHERE id = ?";
+        String sql = "SELECT * FROM clientes WHERE id = ?";
     
         try (Connection conn = DriverManager.getConnection(jbcURL, user, pass)) {
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -116,10 +124,13 @@ public class ClientDAO {
                 if (rs.next()) {
                     foundClient = new Client();
                     foundClient.setId(rs.getLong("id"));
-                    foundClient.setName(rs.getString("nome"));
+                    foundClient.setName(rs.getString("name"));
                     foundClient.setEmail(rs.getString("email"));
                     foundClient.setPassword(rs.getString("password"));
                     foundClient.setRepeatpassword(rs.getString("repeatpassword"));
+                    foundClient.setCpf(rs.getString("cpf"));
+                    foundClient.setEndereco(rs.getString("endereco"));
+                    foundClient.setDataCriacao(rs.getDate("dataCriacao"));
         
                 }
             }
@@ -132,15 +143,18 @@ public class ClientDAO {
 
     public Client updatedClient(Client clientId) {
         Client updatedClient = null;
-        String sql = "UPDATE client SET nome = ?, email = ?, password = ?, repeatpassword = ? WHERE id = ?";
+        String sql = "UPDATE clientes SET nome = ?, email = ?, password = ?, repeatpassword = ? WHERE id = ?";
         
         try (Connection conn = DriverManager.getConnection(jbcURL, user, pass)) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, clientId.getName());
             stmt.setString(2, clientId.getEmail());
             stmt.setString(3, clientId.getPassword());
-            stmt.setString(4, clientId.getRepeatpassword());
-            stmt.setLong(5, clientId.getId());
+            stmt.setString(4,clientId.getRepeatpassword());
+            stmt.setString(5, clientId.getCpf());
+            stmt.setString(6, clientId.getEndereco());
+            stmt.setDate(7, new java.sql.Date(clientId.getDataCriacao().getTime()));
+            stmt.setLong(8, clientId.getId());
             
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
@@ -154,7 +168,7 @@ public class ClientDAO {
     }
 
     public void deleteClient(Client client) throws SQLException {
-        String sql = "DELETE FROM client WHERE id = ?";
+        String sql = "DELETE FROM clientes WHERE id = ?";
         try (Connection conn = DriverManager.getConnection(jbcURL, user, pass)) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setLong(1, client.getId());
