@@ -7,6 +7,9 @@
     "paths": {
         "/BookStoreDigital/clientes": {
             "get": {
+                "tags": [
+                    "Clientes"
+                ],
                 "summary": "Listar clientes",
                 "responses": {
                     "200": {
@@ -41,6 +44,9 @@
                 }
             },
             "post": {
+                "tags": [
+                    "Clientes"
+                ],
                 "summary": "Criar novo cliente",
                 "requestBody": {
                     "required": true,
@@ -61,6 +67,9 @@
         },
         "/BookStoreDigital/clientes/login": {
             "post": {
+                "tags": [
+                    "Clientes"
+                ],
                 "summary": "Login de cliente",
                 "requestBody": {
                     "required": true,
@@ -84,6 +93,9 @@
         },
         "/BookStoreDigital/clientes/validate-token": {
             "get": {
+                "tags": [
+                    "Clientes"
+                ],
                 "summary": "Validar token JWT",
                 "description": "Valida se o token JWT passado no header Authorization é válido.",
                 "parameters": [
@@ -114,6 +126,9 @@
         },
         "/BookStoreDigital/clientes/{id}": {
             "get": {
+                "tags": [
+                    "Clientes"
+                ],
                 "summary": "Buscar cliente por ID",
                 "parameters": [
                     {
@@ -142,6 +157,9 @@
                 }
             },
             "put": {
+                "tags": [
+                    "Clientes"
+                ],
                 "summary": "Atualizar cliente",
                 "parameters": [
                     {
@@ -170,6 +188,9 @@
                 }
             },
             "delete": {
+                "tags": [
+                    "Clientes"
+                ],
                 "summary": "Remover cliente",
                 "parameters": [
                     {
@@ -190,6 +211,9 @@
         },
         "/BookStoreDigital/livros": {
             "get": {
+                "tags": [
+                    "Livros"
+                ],
                 "summary": "Listar livros",
                 "responses": {
                     "200": {
@@ -217,7 +241,7 @@
                                                 "idioma": "string",
                                                 "preco": 0,
                                                 "imageUrl": "string",
-                                                "quantidade": 0
+                                                "quant": 0
                                             }
                                         ]
                                     }
@@ -228,6 +252,9 @@
                 }
             },
             "post": {
+                "tags": [
+                    "Livros"
+                ],
                 "summary": "Criar novo livro",
                 "requestBody": {
                     "required": true,
@@ -248,6 +275,9 @@
         },
         "/BookStoreDigital/livros/{id}": {
             "put": {
+                "tags": [
+                    "Livros"
+                ],
                 "summary": "Atualizar livro",
                 "parameters": [
                     {
@@ -277,6 +307,9 @@
                 }
             },
             "delete": {
+                "tags": [
+                    "Livros"
+                ],
                 "summary": "Remover livro",
                 "parameters": [
                     {
@@ -297,6 +330,9 @@
         },
         "/BookStoreDigital/livros/{title}": {
             "get": {
+                "tags": [
+                    "Livros"
+                ],
                 "summary": "Buscar livro por Título",
                 "parameters": [
                     {
@@ -327,6 +363,9 @@
         },
         "/BookStoreDigital/livros/editora/{editora}": {
             "get": {
+                "tags": [
+                    "Livros"
+                ],
                 "summary": "Buscar livros por Editora",
                 "parameters": [
                     {
@@ -360,6 +399,9 @@
         },
         "/BookStoreDigital/livros/isbn/{isbn}": {
             "get": {
+                "tags": [
+                    "Livros"
+                ],
                 "summary": "Buscar livros por ISBN",
                 "parameters": [
                     {
@@ -390,6 +432,9 @@
         },
         "/BookStoreDigital/livros/genero/{genero}": {
             "get": {
+                "tags": [
+                    "Livros"
+                ],
                 "summary": "Buscar livros por Gênero",
                 "parameters": [
                     {
@@ -514,7 +559,7 @@
                     "imageUrl": {
                         "type": "string"
                     },
-                    "quantidade": {
+                    "quant": {
                         "type": "integer"
                     }
                 }

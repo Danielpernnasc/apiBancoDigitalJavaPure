@@ -84,6 +84,22 @@ public class BookStoreDAO {
         }
     }
 
+    public Livros buscarLivroPorId(long livroId) throws SQLException {
+        Livros livro = null;
+        try (Connection conn = DriverManager.getConnection(jbcURL, user, pass)) {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM livros WHERE id = ?");
+            stmt.setLong(1, livroId); // <-- aqui usamos setLong
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                livro = montarLivro(rs); // método que você já tem
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar livro por ID: " + e.getMessage());
+            throw e;
+        }
+        return livro;
+    }
+
     public List<Livros> buscarLivrosPorTitulo(String livroTitle) throws SQLException {
         List<Livros> lista = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(jbcURL, user, pass)) {
