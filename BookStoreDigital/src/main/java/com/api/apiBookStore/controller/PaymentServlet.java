@@ -101,8 +101,7 @@ public class PaymentServlet extends HttpServlet {
                 cliente.setCpf(cpf);
 
                 pagamento.setClientId(cliente); // aqui sim preenche com dados
-                pagamento.setClienteId(id); // opcional se quiser manter o id separado
-                pagamento.setCpf(cpf); // opcional se quiser mostrar o CPF no JSON
+              
             } else {
 
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -132,7 +131,7 @@ public class PaymentServlet extends HttpServlet {
         switch (tipo) { // <-- aqui usa a variável 'tipo' já limpa e normalizada
             case "boleto":
               
-                pagamento.setCpf(pagamento.getCpf());
+            
 
 
                 pagamento.setTitulo(pagamento.getTitulo());
@@ -143,7 +142,7 @@ public class PaymentServlet extends HttpServlet {
             case "pix":
 
               
-                pagamento.setCpf(pagamento.getCpf());
+              
 
                 pagamento.setTitulo(pagamento.getTitulo());
                 pagamento.setStatus("aprovado");
@@ -151,7 +150,7 @@ public class PaymentServlet extends HttpServlet {
                 break;
             case "cartaocredito": // funciona mesmo que venha "cartão de crédito"
             
-                pagamento.setCpf(pagamento.getCpf());
+         
 
                 if (pagamento.getValor() <= 1000.00) {
                     pagamento.setTitulo(pagamento.getTitulo());
