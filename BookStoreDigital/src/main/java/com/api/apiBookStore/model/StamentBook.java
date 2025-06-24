@@ -26,7 +26,8 @@ public class StamentBook {
                 }
         }
 
-        public void statementUpdate(Connection conn, Livros book) throws SQLException {
+     
+        public void updateLivro(Connection conn, Livros book) throws SQLException {
             String sql = "UPDATE livros SET titulo = ?, autor = ?, editora = ?, anoPublicacao = ?, genero = ?, sinopse = ?, idioma = ?, preco = ?, imageUrl = ?, quant = ? WHERE isbn = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, book.getTitulo());
@@ -39,9 +40,10 @@ public class StamentBook {
                 stmt.setDouble(8, book.getPreco());
                 stmt.setString(9, book.getImageUrl());
                 stmt.setInt(10, book.getQuant());
-                stmt.setString(11, book.getIsbn()); // Condição WHERE
+                stmt.setString(11, book.getIsbn()); // Condição para atualizar o registro correto
                 stmt.executeUpdate();
             }
         }
+        
 
 }

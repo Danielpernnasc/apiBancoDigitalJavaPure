@@ -24,10 +24,13 @@
                                         "value": [
                                             {
                                                 "id": 0,
-                                                "nome": "string",
+                                                "name": "string",
                                                 "email": "string",
                                                 "password": "string",
-                                                "repeatpassword": "string"
+                                                "repeatpassword": "string",
+                                                "cpf": "string",
+                                                "endereco": "string",
+                                                "dataCriacao": "datetime"
                                             }
                                         ]
                                     }
@@ -434,7 +437,7 @@
                     "id": {
                         "type": "integer"
                     },
-                    "nome": {
+                    "name": {
                         "type": "string"
                     },
                     "email": {
@@ -445,6 +448,16 @@
                     },
                     "repeatpassword": {
                         "type": "string"
+                    },
+                    "cpf": {
+                        "type": "string"
+                    },
+                    "endereco": {
+                        "type": "string"
+                    },
+                    "dataCriacao": {
+                        "type": "string",
+                        "format": "date-time"
                     }
                 }
             },

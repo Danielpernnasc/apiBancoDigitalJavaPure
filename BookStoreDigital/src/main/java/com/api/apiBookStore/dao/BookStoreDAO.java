@@ -1,5 +1,6 @@
 package com.api.apiBookStore.dao;
 
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,9 +10,6 @@ import java.util.List;
 
 import com.api.apiBookStore.model.Livros;
 import com.api.apiBookStore.model.StamentBook;
-
-
-import java.sql.Connection;
 
 public class BookStoreDAO {
     private final String jbcURL = "jdbc:mysql://mydigitalbank.c7sog0s4qdes.us-east-2.rds.amazonaws.com:3306/BookStoreDB";
@@ -71,7 +69,7 @@ public class BookStoreDAO {
             System.out.println("Conectado ao banco para atualização!");
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM livros WHERE id = ?");
             stmt.setLong(1, livroId);
-            stamentBook.statementUpdate(conn, books);
+            stamentBook.updateLivro(conn, books);
             System.out.println("Livro atualizado com sucesso!");
         }
     }
@@ -167,18 +165,6 @@ public class BookStoreDAO {
             stmt.setString(1, "%" + isbn + "%");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-            
-                // livro.setId(rs.getLong("id"));
-                // livro.setTitulo(rs.getString("titulo"));
-                // livro.setAutor(rs.getString("autor"));
-                // livro.setEditora(rs.getString("editora"));
-                // livro.setAnoPublicacao(rs.getString("anoPublicacao"));
-                // livro.setGenero(rs.getString("genero"));
-                // livro.setSinopse(rs.getString("sinopse"));
-                // livro.setIsbn(rs.getString("isbn"));
-                // livro.setIdioma(rs.getString("idioma"));
-                // livro.setPreco(rs.getDouble("preco"));
-                // livro.setImageUrl(rs.getString("imageUrl"));
                 lista.add(montarLivro(rs));
             }
         } catch (SQLException e) {

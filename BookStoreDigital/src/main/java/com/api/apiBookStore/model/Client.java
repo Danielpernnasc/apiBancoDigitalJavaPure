@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.util.Date;
 
 
 @Entity
@@ -13,10 +14,13 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nome;
+    private String name;
     private String email;
     private String password;
     private String repeatpassword;
+    private String cpf;
+    private String endereco;
+    private Date dataCriacao; 
 
 
     public Long getId() {
@@ -28,11 +32,11 @@ public class Client {
     }
 
     public String getName() {
-        return nome;
+        return name;
     }
 
-    public void setName(String nome) {
-        this.nome = nome;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -57,6 +61,25 @@ public class Client {
 
     public void setRepeatpassword(String repeatpassword) {
         this.repeatpassword = repeatpassword;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+    public String getEndereco() {
+        return endereco;
+    }
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
+    }
+    public Date getDataCriacao() {
+        return dataCriacao;
+    }
+    public void setDataCriacao(Date dataCriacao) {
+        this.dataCriacao = dataCriacao;
     }
 
     // Removed duplicate method definition

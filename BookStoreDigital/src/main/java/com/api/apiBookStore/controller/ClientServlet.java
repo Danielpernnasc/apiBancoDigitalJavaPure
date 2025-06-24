@@ -93,10 +93,8 @@ public class ClientServlet extends HttpServlet{
              return;
          }
 
-         if (!isTokenValid(request, response))
-             return;
-
          if (pathInfo == null || pathInfo.equals("/")) {
+             // 🔓 Não exige token para cadastro de novo cliente
              String json = request.getReader().lines().reduce("", (acc, line) -> acc + line);
              Client client = new Gson().fromJson(json, Client.class);
              try {
@@ -107,9 +105,14 @@ public class ClientServlet extends HttpServlet{
                  response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                  response.getWriter().write("Error creating client: " + e.getMessage());
              }
-         } else {
-             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Invalid POST path");
+             return;
          }
+
+         // Todas as outras rotas POST precisam de token
+         if (!isTokenValid(request, response))
+             return;
+
+         response.sendError(HttpServletResponse.SC_NOT_FOUND, "Invalid POST path");
      }
 
      private void doPostLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
