@@ -8,7 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.api.apiBookStore.DTO.ItemSacola;
+import com.api.apiBookStore.model.Client;
 import com.api.apiBookStore.model.Pagamento;
+import com.api.apiBookStore.service.PaymentService;
 import com.api.apiBookStore.util.PagamentoRequest;
 import com.google.gson.Gson;
 
@@ -25,6 +27,8 @@ public class PaymentServlet extends HttpServlet {
     private final String user = "adminDigBank";
     private final String pass = "Dce81125";
 
+    PaymentService paymentService = new PaymentService();
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, java.io.IOException {
@@ -32,6 +36,7 @@ public class PaymentServlet extends HttpServlet {
         BufferedReader reader = request.getReader();
         PagamentoRequest pagamentoRequest = gson.fromJson(reader, PagamentoRequest.class);
         Pagamento pagamento = new Pagamento();
+       
 
         double valorTotal = 0;
         StringBuilder titulos = new StringBuilder();
@@ -80,6 +85,35 @@ public class PaymentServlet extends HttpServlet {
           throw new ServletException("Erro ao processar pagamento", e);
         }
 
+        try(Connection conn = DriverManager.getConnection(jdbcURL, user, pass)) {
+            // Verifica se o cliente existe
+            PreparedStatement stmt = conn.prepareStatement("SELECT id, cpf FROM clientes WHERE id = ?");
+
+            stmt.setLong(1, pagamentoRequest.getClienteId());
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                long id = rs.getLong("id");
+                String cpf = rs.getString("cpf");
+
+                Client cliente = new Client();
+                cliente.setId(id);
+                cliente.setCpf(cpf);
+
+                pagamento.setClientId(cliente); // aqui sim preenche com dados
+                pagamento.setClienteId(id); // opcional se quiser manter o id separado
+                pagamento.setCpf(cpf); // opcional se quiser mostrar o CPF no JSON
+            } else {
+
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                pagamento.setMensagem("Cliente não encontrado com ID: " + pagamentoRequest.getClienteId());
+                enviarResposta(response, pagamento);
+                return;
+            }
+        } catch (SQLException e) {
+            throw new ServletException("Erro ao verificar cliente", e);
+        }
+
         // 3. Simular pagamento
         pagamento.setTipoPagamento(pagamentoRequest.getTipoPagamento());
         pagamento.setValor(valorTotal);
@@ -97,16 +131,28 @@ public class PaymentServlet extends HttpServlet {
 
         switch (tipo) { // <-- aqui usa a variável 'tipo' já limpa e normalizada
             case "boleto":
+              
+                pagamento.setCpf(pagamento.getCpf());
+
+
                 pagamento.setTitulo(pagamento.getTitulo());
                 pagamento.setStatus("pendente");
                 pagamento.setMensagem("Boleto gerado: 00190.00009 01234.567890 12345.678901 1 23450000010000");
+
                 break;
             case "pix":
+
+              
+                pagamento.setCpf(pagamento.getCpf());
+
                 pagamento.setTitulo(pagamento.getTitulo());
                 pagamento.setStatus("aprovado");
                 pagamento.setMensagem("Pagamento aprovado via PIX.");
                 break;
             case "cartaocredito": // funciona mesmo que venha "cartão de crédito"
+            
+                pagamento.setCpf(pagamento.getCpf());
+
                 if (pagamento.getValor() <= 1000.00) {
                     pagamento.setTitulo(pagamento.getTitulo());
                     pagamento.setStatus("aprovado");
@@ -120,9 +166,27 @@ public class PaymentServlet extends HttpServlet {
             default:
                 pagamento.setStatus("erro");
                 pagamento.setMensagem("Tipo de pagamento inválido.");
-                break;
         }
-        enviarResposta(response, pagamento);
+
+        String status = pagamento.getStatus(); // status já definido no switch
+
+        try {
+            Long vendaId = paymentService.registrarVenda(
+                    pagamentoRequest.getClienteId(),
+                    pagamentoRequest.getSacola(), // List<ItemSacola>
+                    pagamento.getTipoPagamento(),
+                    status,
+                    pagamento.getValor()
+            );
+            pagamento.setMensagem(pagamento.getMensagem() + " Venda registrada com ID: " + vendaId);
+            enviarResposta(response, pagamento);
+        } catch (SQLException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            pagamento.setStatus("erro");
+            pagamento.setMensagem("Erro ao registrar venda: " + e.getMessage());
+            enviarResposta(response, pagamento);
+        }
+        
     }
 
     private void enviarResposta(HttpServletResponse response, Pagamento pagamento) throws IOException, java.io.IOException {
@@ -131,6 +195,11 @@ public class PaymentServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(gson.toJson(pagamento));
     }
+
+    
+
+    
+    
 
     
 }
