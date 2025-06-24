@@ -20,6 +20,7 @@ public class Livros {
     private double preco;
     private String imageUrl;
     private Integer quant;
+    
 
     public Long getId() {
         return id;
