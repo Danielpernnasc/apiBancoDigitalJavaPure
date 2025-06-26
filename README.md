@@ -1,7 +1,7 @@
-🏦 API - Meu Banco Digital (Java Servlet)
-Este é o backend do projeto Meu Banco Digital, agora desenvolvido com Java puro (Servlets), utilizando conexão direta com MySQL via JDBC.
+🏦 API - Livraria Ecommerce (Java Servlet)
+Este é o backend do projeto Livraria Ecommerce, agora desenvolvido com Java puro (Servlets), utilizando conexão direta com MySQL via JDBC.
 
-A aplicação realiza operações básicas de cadastro e listagem de clientes, utilizando um servlet mapeado via web.xml e/ou anotações @WebServlet. Ideal para estudos e prática com Java web sem frameworks.
+A aplicação realiza operações básicas de cadastro e listagem de clientes,livros, geração de token e autenticação utilizando um servlet mapeado via web.xml e/ou anotações @WebServlet. Ideal para estudos e prática com Java web sem frameworks.
 
 🚀 Tecnologias Utilizadas
 ✅ Java 17
@@ -22,20 +22,8 @@ A aplicação realiza operações básicas de cadastro e listagem de clientes, u
 bash
 Copiar
 Editar
-apiBancoDigital/
-├── src/
-│   └── main/
-│       ├── java/
-│       │   └── com/api/apiBanco/
-│       │       ├── controller/   # Servlets
-│       │       ├── dao/         # Acesso ao banco
-│       │       └── model/       # Classe Client
-│       └── resources/
-│           └── webapp/
-│               └── WEB-INF/
-│                   └── web.xml
-├── pom.xml
-├── README.md
+apiBookStore/
+
 ⚙️ Como Executar o Projeto Localmente
 1. Clone o repositório:
 bash
