@@ -27,7 +27,7 @@ Ideal para estudos e prática com Java Web sem frameworks.
 
 
 
----
+
 
 📁 Estrutura do Projeto
 
@@ -46,7 +46,7 @@ BookStore/
 1. Clone o repositório
 
 git clone https://github.com/Danielpernnasc/apiBancoDigitalJavaPure.git
-cd apiBancoDigitalJavaPure
+cd BookStoreDigital
 
 2. Compile o projeto com Maven
 
