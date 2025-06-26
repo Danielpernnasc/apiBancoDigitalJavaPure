@@ -1,6 +1,4 @@
 
-
-
 🏦 API - Livraria Ecommerce (Java Servlet)
 
 Este é o backend do projeto Livraria Ecommerce, desenvolvido em Java puro com Servlets, utilizando conexão direta com MySQL via JDBC.
